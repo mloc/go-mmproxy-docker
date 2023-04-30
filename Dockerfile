@@ -7,5 +7,8 @@ RUN go install github.com/path-network/go-mmproxy@${GO_MMPROXY_VERSION:-latest}
 
 FROM scratch
 COPY --from=build /go/bin/go-mmproxy /usr/local/bin
+RUN mkdir -p /etc/default/go-mmproxy
+COPY default/path-prefixes.txt /etc/default/go-mmproxy
 WORKDIR /data
-CMD ["/usr/local/bin/go-mmproxy"]
+ENTRYPOINT ["/usr/local/bin/go-mmproxy"]
+CMD ["--allowed-subnets", "/etc/default/go-mmproxy/path-prefixes.txt"]
